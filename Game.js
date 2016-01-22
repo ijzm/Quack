@@ -12,14 +12,20 @@ var fireRate = 200;
 var nextFire = 0;
 
 var scoretext;
-
+var canmove;
+var speed = 250;
 Quack.Game.prototype = {
 
 	preload: function () {
 	},
 
 	create: function () {
-		canshoot = false; 
+		canshoot = false;
+		canmove = true;
+		
+		this.timer1 = this.game.time.create(false);
+		this.timer1.loop(400, function(){canmove = true}, this);
+		this.timer1.start();
 		
 		map = this.add.tilemap('00');
 		map.addTilesetImage('tiles', 'tiles');
@@ -28,7 +34,9 @@ Quack.Game.prototype = {
 		
 		playerspawn = map.searchTileIndex(6);
 		console.log(map.searchTileIndex(2))
-		player = this.add.sprite(playerspawn.x*35,playerspawn.y*35, "player");
+		player = this.add.sprite(playerspawn.x*35 + 35/2,playerspawn.y*35+35/2, "player");
+		player.anchor.x = 0.5;
+		player.anchor.y = 0.5;
 		map.replace(6, 1, playerspawn.x, playerspawn.y, 1, 1)
 		
 		map.setCollisionBetween(4, 4);
@@ -63,22 +71,46 @@ Quack.Game.prototype = {
 			space: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
 		};
 		if (wasd.up.isDown || cursors.up.isDown) {
-			player.body.velocity.y = -150;
 			player.frame = 3;
-		} else if (wasd.down.isDown || cursors.down.isDown) {
-			player.body.velocity.y = 150;
+			//player.body.velocity.y = -speed;
+		} if (wasd.down.isDown || cursors.down.isDown) {
 			player.frame = 1;
-		} else {
-			player.body.velocity.y = 0;
-		}
-		if (wasd.left.isDown || cursors.left.isDown) {
-			player.body.velocity.x = -150;
+			//player.body.velocity.y = speed;		
+		} if (wasd.left.isDown || cursors.left.isDown) {
 			player.frame = 2;
-		} else if (wasd.right.isDown || cursors.right.isDown) {
-			player.body.velocity.x = 150;
-			player.frame = 0;		
-		} else {
+			//player.body.velocity.x = -speed;
+		} if (wasd.right.isDown || cursors.right.isDown) {			
+			player.frame = 0;	
+			//player.body.velocity.x = speed;
+		} 
+		switch(player.frame){
+			case 0:
+				player.body.velocity.x = speed;
+				player.body.velocity.y = 0;
+				player.y = this.math.snapTo(player.y, 35, 35/2)
+				break;
+			case 1:
+				player.body.velocity.y = speed;
+				player.body.velocity.x = 0;
+				player.x = this.math.snapTo(player.x, 35, 35/2)
+				break;
+			case 2:
+				player.body.velocity.x = -speed;
+				player.body.velocity.y = 0;
+				player.y = this.math.snapTo(player.y, 35, 35/2)
+				break;
+			case 3:
+				player.body.velocity.y = -speed;
+				player.body.velocity.x = 0;
+				player.x = this.math.snapTo(player.x, 35, 35/2)
+				break;
+		}
+		
+		if(!(wasd.up.isDown || cursors.up.isDown || wasd.down.isDown || cursors.down.isDown || wasd.left.isDown || cursors.left.isDown || wasd.right.isDown || cursors.right.isDown)){
 			player.body.velocity.x = 0;
+			player.body.velocity.y = 0;
+			player.y = this.math.snapTo(player.y, 35, 35/2)
+			player.x = this.math.snapTo(player.x, 35, 35/2)
 		}
 		if(wasd.space.isDown){
 			this.fire();
@@ -122,27 +154,23 @@ Quack.Game.prototype = {
 			if (this.time.now > nextFire && bullets.countDead() > 0){
 				nextFire = this.time.now + fireRate;
 				var bullet = bullets.getFirstExists(false);
-				//bullet.reset(player.x + player.width/2, player.y+player.height/2);
+				bullet.reset(player.x, player.y);
 				if(player.frame === 0){
-					bullet.reset(player.x + player.width, player.y+player.height/2);
 					bullet.body.velocity.x = 200;
 					bullet.body.velocity.y = 0
 					bullet.angle = 0;					
 				}
 				if(player.frame === 1){
-					bullet.reset(player.x + player.width/2, player.y+player.height);
 					bullet.body.velocity.x = 0
 					bullet.body.velocity.y = 200 
 					bullet.angle = 90;					
 				}
 				if(player.frame === 2){
-					bullet.reset(player.x, player.y+player.height/2);
 					bullet.body.velocity.x = -200
 					bullet.body.velocity.y = 0
 					bullet.angle = 0;					
 				}
 				if(player.frame === 3){
-					bullet.reset(player.x + player.width/2, player.y);
 					bullet.body.velocity.x = 0
 					bullet.body.velocity.y = -200
 					bullet.angle = 90;
