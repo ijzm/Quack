@@ -11,6 +11,8 @@ var bullets;
 var fireRate = 200;
 var nextFire = 0;
 
+var scoretext;
+
 Quack.Game.prototype = {
 
 	preload: function () {
@@ -32,6 +34,7 @@ Quack.Game.prototype = {
 		map.setCollisionBetween(4, 4);
 		map.setCollisionBetween(8, 8);
 		map.setTileIndexCallback(2, this.collect, this);
+		map.setTileIndexCallback(3, this.collect, this);
 		map.setTileIndexCallback(5, this.pickbullets, this);
 		//map.setTileIndexCallback(4, this.destroyblock, this);
 		
@@ -105,13 +108,10 @@ Quack.Game.prototype = {
 		if (!(test == null)){
 			if(test.index == 4){
 				map.putTile(1, layer.getTileX(sprite.x), layer.getTileY(sprite.y), layer);
-				
-				//test.resetCollision();
 				layer.dirty = true;
-				
-				//map.getTile(layer.getTileX(sprite.x),layer.getTileY(sprite.y) -1, layer).resetCollision();
-				
-				
+				sprite.x = -10;
+			}
+			if(test.index == 8){
 				sprite.x = -10;
 			}
 		}
