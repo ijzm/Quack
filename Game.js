@@ -14,14 +14,18 @@ var nextFire = 0;
 var scoretext;
 var canmove;
 var speed = 150;
-level = 0;
+
+
+var sheepgroup;
+var sheepdirection = 1;
 Quack.Game.prototype = {
 
 	preload: function () {
 	},
 
 	create: function () {
-			console.log(level)
+		level = 0;
+		
 			map = this.add.tilemap(level.toString());		
 			map.addTilesetImage('tiles', 'tiles');
 			layer = map.createLayer('main');
@@ -30,9 +34,9 @@ Quack.Game.prototype = {
 		canshoot = false;
 		canmove = true;
 		
-		this.timer1 = this.game.time.create(false);
-		this.timer1.loop(400, function(){canmove = true}, this);
-		this.timer1.start();
+		this.tick = this.game.time.create(false);
+		this.tick.loop(5000, this.randomize, this);
+		this.tick.start();
 		
 
 		
@@ -42,6 +46,8 @@ Quack.Game.prototype = {
 		player.anchor.x = 0.5;
 		player.anchor.y = 0.5;
 		map.replace(6, 1, playerspawn.x, playerspawn.y, 1, 1)
+		
+		
 		
 		map.setCollisionBetween(4, 4);
 		map.setCollisionBetween(8, 8);
@@ -61,11 +67,17 @@ Quack.Game.prototype = {
 		bullets.setAll('outOfBoundsKill', true);
 		bullets.setAll('checkWorldBounds', true);
 		
-		console.log(map.tilesets)
+		sheepgroup = this.add.group();
+		sheepgroup.enableBody = true;
+		sheepgroup.physicsBodyType = Phaser.Physics.ARCADE;
+		map.createFromTiles(17, 1, "sheep", layer, sheepgroup);
+		
+		
 	},
 
 	update: function () {
 		
+		sheepgroup.forEachAlive(this.ai_sheep, this);
 		
 		var cursors = this.input.keyboard.createCursorKeys();
 		var wasd = {
@@ -150,6 +162,53 @@ Quack.Game.prototype = {
 			}
 		}
 	},
+	
+	ai_sheep: function(sprite){
+		var up = map.getTile(layer.getTileX(sprite.x),layer.getTileY(sprite.y)-1, layer);
+		var right = map.getTile(layer.getTileX(sprite.x)+1,layer.getTileY(sprite.y), layer);
+		var down = map.getTile(layer.getTileX(sprite.x),layer.getTileY(sprite.y)+1, layer);
+		var left = map.getTile(layer.getTileX(sprite.x)-1,layer.getTileY(sprite.y), layer);
+		
+		if(sheepdirection == 0 && !(right == null)){
+			if(right.index == 2 || right.index == 1){
+				sprite.body.velocity.x = 20;
+				sprite.body.velocity.y = 0;
+				
+			}
+		}
+		if(sheepdirection == 1 && !(down == null)){
+			if(down.index == 2 || down.index == 1){
+				sprite.body.velocity.x = 0;
+				sprite.body.velocity.y = 20;
+			}
+		}
+		if(sheepdirection == 2 && !(left == null)){
+			if(left.index == 2 || left.index == 1){
+				sprite.body.velocity.x = -20;
+				sprite.body.velocity.y = 0;
+			}
+		}
+		if(sheepdirection == 3 && !(up == null)){
+			if(up.index == 2 || up.index == 1){
+				sprite.body.velocity.x = 0;
+				sprite.body.velocity.y = -20;
+			}
+		}
+		
+		
+		
+	},
+	
+	randomize: function(){
+		sheepdirection = Math.floor(Math.random() * 4);
+		console.log(sheepdirection);
+	},
+	
+	
+	
+	
+	
+	
 	
 	fire: function(){
 		if(canshoot){
