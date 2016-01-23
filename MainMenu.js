@@ -24,7 +24,7 @@ Quack.MainMenu.prototype = {
 		this.camera.y = 0;
 		this.camera.x = 0;
 		
-		playbutton = this.add.button(this.game.width/2,this.game.height/2, "playbutton", this.playTheGame,this);
+		playbutton = this.add.button(60,this.game.height/2, "playbutton", this.playTheGame,this);
 		playbutton.anchor.x = 0.5;
 		playbutton.anchor.y = 0.5;			
 	},
