@@ -19,7 +19,7 @@ Quack.Preloader.prototype = {
 		//Music/Sounds
 		this.load.audio('menumusic', 'assets/menumusic.ogg');
 		//Tilemaps and Tiles
-		this.load.tilemap('00', 'maps/00.json', null, Phaser.Tilemap.TILED_JSON);
+		this.load.tilemap('0', 'maps/0.json', null, Phaser.Tilemap.TILED_JSON);
 		this.load.image('tiles', 'assets/tiles.png');
 
 		this.time.advancedTiming = true;

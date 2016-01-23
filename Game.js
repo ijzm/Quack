@@ -13,13 +13,20 @@ var nextFire = 0;
 
 var scoretext;
 var canmove;
-var speed = 250;
+var speed = 150;
+level = 0;
 Quack.Game.prototype = {
 
 	preload: function () {
 	},
 
 	create: function () {
+			console.log(level)
+			map = this.add.tilemap(level.toString());		
+			map.addTilesetImage('tiles', 'tiles');
+			layer = map.createLayer('main');
+			layer.resizeWorld();
+		
 		canshoot = false;
 		canmove = true;
 		
@@ -27,10 +34,7 @@ Quack.Game.prototype = {
 		this.timer1.loop(400, function(){canmove = true}, this);
 		this.timer1.start();
 		
-		map = this.add.tilemap('00');
-		map.addTilesetImage('tiles', 'tiles');
-		layer = map.createLayer('main');
-		layer.resizeWorld();
+
 		
 		playerspawn = map.searchTileIndex(6);
 		console.log(map.searchTileIndex(2))
@@ -57,6 +61,8 @@ Quack.Game.prototype = {
 		bullets.setAll('anchor.y', 0.5);
 		bullets.setAll('outOfBoundsKill', true);
 		bullets.setAll('checkWorldBounds', true);
+		
+		console.log(map.tilesets)
 	},
 
 	update: function () {
@@ -68,6 +74,7 @@ Quack.Game.prototype = {
 			down: this.input.keyboard.addKey(Phaser.Keyboard.S),
 			left: this.input.keyboard.addKey(Phaser.Keyboard.A),
 			right: this.input.keyboard.addKey(Phaser.Keyboard.D),
+			shift: this.input.keyboard.addKey(Phaser.Keyboard.shiftKey),
 			space: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
 		};
 		if (wasd.up.isDown || cursors.up.isDown) {
@@ -87,22 +94,22 @@ Quack.Game.prototype = {
 			case 0:
 				player.body.velocity.x = speed;
 				player.body.velocity.y = 0;
-				player.y = this.math.snapTo(player.y, 35, 35/2)
+				player.y = this.math.snapTo(player.y, 35, 35/2);				
 				break;
 			case 1:
 				player.body.velocity.y = speed;
 				player.body.velocity.x = 0;
-				player.x = this.math.snapTo(player.x, 35, 35/2)
+				player.x = this.math.snapTo(player.x, 35, 35/2);	
 				break;
 			case 2:
 				player.body.velocity.x = -speed;
 				player.body.velocity.y = 0;
-				player.y = this.math.snapTo(player.y, 35, 35/2)
+				player.y = this.math.snapTo(player.y, 35, 35/2);
 				break;
 			case 3:
 				player.body.velocity.y = -speed;
 				player.body.velocity.x = 0;
-				player.x = this.math.snapTo(player.x, 35, 35/2)
+				player.x = this.math.snapTo(player.x, 35, 35/2);
 				break;
 		}
 		
@@ -112,7 +119,7 @@ Quack.Game.prototype = {
 			player.y = this.math.snapTo(player.y, 35, 35/2)
 			player.x = this.math.snapTo(player.x, 35, 35/2)
 		}
-		if(wasd.space.isDown){
+		if(wasd.shift.isDown){
 			this.fire();
 		}
 		this.camera.follow(player);
