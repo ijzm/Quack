@@ -11,6 +11,7 @@ Quack.Preloader.prototype = {
 	preload: function () {
 		//Images
 		this.load.image('playbutton', 'assets/playbutton.png');
+		this.load.image('bg', 'assets/bg.png');
 		
 		this.load.image('bullet', 'assets/bullet.png');
 		
