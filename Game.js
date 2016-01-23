@@ -48,7 +48,6 @@ Quack.Game.prototype = {
 		map.setTileIndexCallback(2, this.collect, this);
 		map.setTileIndexCallback(3, this.collect, this);
 		map.setTileIndexCallback(5, this.pickbullets, this);
-		//map.setTileIndexCallback(4, this.destroyblock, this);
 		
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 		this.physics.arcade.enable(player);
@@ -79,16 +78,12 @@ Quack.Game.prototype = {
 		};
 		if (wasd.up.isDown || cursors.up.isDown) {
 			player.frame = 3;
-			//player.body.velocity.y = -speed;
 		} if (wasd.down.isDown || cursors.down.isDown) {
-			player.frame = 1;
-			//player.body.velocity.y = speed;		
+			player.frame = 1;		
 		} if (wasd.left.isDown || cursors.left.isDown) {
 			player.frame = 2;
-			//player.body.velocity.x = -speed;
 		} if (wasd.right.isDown || cursors.right.isDown) {			
 			player.frame = 0;	
-			//player.body.velocity.x = speed;
 		} 
 		switch(player.frame){
 			case 0:
@@ -119,7 +114,7 @@ Quack.Game.prototype = {
 			player.y = this.math.snapTo(player.y, 35, 35/2)
 			player.x = this.math.snapTo(player.x, 35, 35/2)
 		}
-		if(wasd.shift.isDown){
+		if(wasd.space.isDown){
 			this.fire();
 		}
 		this.camera.follow(player);
