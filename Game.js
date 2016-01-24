@@ -15,9 +15,10 @@ var scoretext;
 var canmove;
 var speed = 150;
 
+var random = true;
+
 
 var sheepgroup;
-var sheepdirection = 1;
 Quack.Game.prototype = {
 
 	preload: function () {
@@ -34,14 +35,14 @@ Quack.Game.prototype = {
 		canshoot = false;
 		canmove = true;
 		
-		this.tick = this.game.time.create(false);
-		this.tick.loop(5000, this.randomize, this);
-		this.tick.start();
+//		this.tick = this.game.time.create(false);
+//		this.tick.loop(5000, this.randomize, this);
+//		this.tick.start();
 		
 
 		
 		playerspawn = map.searchTileIndex(6);
-		console.log(map.searchTileIndex(2))
+		//console.log(map.searchTileIndex(2))
 		player = this.add.sprite(playerspawn.x*35 + 35/2,playerspawn.y*35+35/2, "player");
 		player.anchor.x = 0.5;
 		player.anchor.y = 0.5;
@@ -126,6 +127,7 @@ Quack.Game.prototype = {
 			player.y = this.math.snapTo(player.y, 35, 35/2)
 			player.x = this.math.snapTo(player.x, 35, 35/2)
 		}
+		
 		if(wasd.space.isDown){
 			this.fire();
 		}
@@ -162,54 +164,7 @@ Quack.Game.prototype = {
 			}
 		}
 	},
-	
-	ai_sheep: function(sprite){
-		var up = map.getTile(layer.getTileX(sprite.x),layer.getTileY(sprite.y)-1, layer);
-		var right = map.getTile(layer.getTileX(sprite.x)+1,layer.getTileY(sprite.y), layer);
-		var down = map.getTile(layer.getTileX(sprite.x),layer.getTileY(sprite.y)+1, layer);
-		var left = map.getTile(layer.getTileX(sprite.x)-1,layer.getTileY(sprite.y), layer);
 		
-		if(sheepdirection == 0 && !(right == null)){
-			if(right.index == 2 || right.index == 1){
-				sprite.body.velocity.x = 20;
-				sprite.body.velocity.y = 0;
-				
-			}
-		}
-		if(sheepdirection == 1 && !(down == null)){
-			if(down.index == 2 || down.index == 1){
-				sprite.body.velocity.x = 0;
-				sprite.body.velocity.y = 20;
-			}
-		}
-		if(sheepdirection == 2 && !(left == null)){
-			if(left.index == 2 || left.index == 1){
-				sprite.body.velocity.x = -20;
-				sprite.body.velocity.y = 0;
-			}
-		}
-		if(sheepdirection == 3 && !(up == null)){
-			if(up.index == 2 || up.index == 1){
-				sprite.body.velocity.x = 0;
-				sprite.body.velocity.y = -20;
-			}
-		}
-		
-		
-		
-	},
-	
-	randomize: function(){
-		sheepdirection = Math.floor(Math.random() * 4);
-		console.log(sheepdirection);
-	},
-	
-	
-	
-	
-	
-	
-	
 	fire: function(){
 		if(canshoot){
 			if (this.time.now > nextFire && bullets.countDead() > 0){
