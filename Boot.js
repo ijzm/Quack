@@ -6,7 +6,7 @@ var desktop;
 
 var score = 0;
 var lastscore = 0;
-var level;
+var level = 0;
 
 /*if(! localStorage.getItem('myItemKey')){
 	level = 0;

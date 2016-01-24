@@ -17,6 +17,7 @@ var speed = 150;
 
 var random = true;
 
+var collects;
 
 var sheepgroup;
 Quack.Game.prototype = {
@@ -25,7 +26,8 @@ Quack.Game.prototype = {
 	},
 
 	create: function () {
-		level = 0;
+		
+		collects = 0;
 		
 			map = this.add.tilemap(level.toString());		
 			map.addTilesetImage('tiles', 'tiles');
@@ -55,6 +57,7 @@ Quack.Game.prototype = {
 		map.setTileIndexCallback(2, this.collect, this);
 		map.setTileIndexCallback(3, this.collect, this);
 		map.setTileIndexCallback(5, this.pickbullets, this);
+		map.setTileIndexCallback(10, this.win, this);
 		
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 		this.physics.arcade.enable(player);
@@ -72,6 +75,12 @@ Quack.Game.prototype = {
 		sheepgroup.enableBody = true;
 		sheepgroup.physicsBodyType = Phaser.Physics.ARCADE;
 		map.createFromTiles(17, 1, "sheep", layer, sheepgroup);
+		
+		while(map.searchTileIndex(2, collects, false, layer) !== null){
+			collects++;
+			console.log(collects);		
+		}
+		
 		
 		
 	},
@@ -136,6 +145,7 @@ Quack.Game.prototype = {
 		//this.physics.arcade.collide(bullets, layer);
 		
 		bullets.forEach(this.destroyblock, this, true)
+		
 	},
 	
 	render: function(){
@@ -144,6 +154,8 @@ Quack.Game.prototype = {
 	collect: function(sprite, tile){
 		tile.index = 1;
 		layer.dirty = true;
+		collects--
+		console.log(collects);
 			
 	},
 	pickbullets: function(sprite, tile){
@@ -164,7 +176,15 @@ Quack.Game.prototype = {
 			}
 		}
 	},
-		
+	
+	win: function(){
+		if(collects <= 0){
+			console.log("TEST")
+			this.game.state.start("GameOver");
+			level++;
+		}
+	},
+	
 	fire: function(){
 		if(canshoot){
 			if (this.time.now > nextFire && bullets.countDead() > 0){
