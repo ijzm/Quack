@@ -84,9 +84,6 @@ Quack.Game.prototype = {
 		while(map.searchTileIndex(2, collects, false, layer) !== null){
 			collects++;
 		}
-		
-		
-		
 	},
 
 	update: function () {
