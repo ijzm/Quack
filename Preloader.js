@@ -13,12 +13,14 @@ Quack.Preloader.prototype = {
 		this.load.image('playbutton', 'assets/playbutton.png');
 		this.load.image('bg', 'assets/bg.png');
 		this.load.image('redending', 'assets/redending.png');
+		this.load.image('blueending', 'assets/blueending.png');
 		
 		this.load.image('bullet', 'assets/bullet.png');
 		
 		this.load.image('sheep', 'assets/sheep.png');
 		
 		this.load.spritesheet('player', 'assets/player.png', 35, 35);
+		this.load.spritesheet('player2', 'assets/player2.png', 35, 35);
 		//Music/Sounds
 		this.load.audio('menumusic', 'assets/menumusic.ogg');
 		//Tilemaps and Tiles

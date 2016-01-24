@@ -8,6 +8,8 @@ var score = 0;
 var lastscore = 0;
 var level = 0;
 
+var coop = false;
+
 /*if(! localStorage.getItem('myItemKey')){
 	level = 0;
 	localStorage.setItem('myItemKey', level.toString());
