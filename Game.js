@@ -20,6 +20,7 @@ var random = true;
 var collects;
 
 var sheepgroup;
+var endings;
 Quack.Game.prototype = {
 
 	preload: function () {
@@ -76,9 +77,12 @@ Quack.Game.prototype = {
 		sheepgroup.physicsBodyType = Phaser.Physics.ARCADE;
 		map.createFromTiles(17, 1, "sheep", layer, sheepgroup);
 		
+		endings = this.add.group()
+		map.createFromTiles(10, 10, "redending", layer, endings);
+		endings.forEach(function(sprite){sprite.y -=14;}, this);
+		
 		while(map.searchTileIndex(2, collects, false, layer) !== null){
 			collects++;
-			console.log(collects);		
 		}
 		
 		
