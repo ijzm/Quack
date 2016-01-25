@@ -9,6 +9,7 @@ var menubutton;
 var credits;
 var help;
 var coopbutton;
+var ingame;
 
 Quack.MainMenu.prototype = {
 
@@ -20,8 +21,10 @@ Quack.MainMenu.prototype = {
 		music = this.add.audio('menumusic');
 		music.loopFull();
 		
-		this.game.add.sprite(0, 0, 'bg');
+		ingame = this.add.audio("ingame");
 		
+		this.game.add.sprite(0, 0, 'bg');
+		this.game.add.sprite(10, 20, "logo");
 		this.camera.y = 0;
 		this.camera.x = 0;
 		
@@ -39,11 +42,15 @@ Quack.MainMenu.prototype = {
 		playTheGame: function(){
 			console.log("PLAY");
 			this.state.start("Game");
+			music.stop();
+			ingame.loopFull();
 	},
 			coop: function(){
 			console.log("PLAY 2p");
 				coop = true;
 			this.state.start("Game");
+				music.stop();
+				ingame.loopFull();
 	},
 
 };
