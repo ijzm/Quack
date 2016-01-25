@@ -1,33 +1,32 @@
 <!DOCTYPE HTML>
 <html>
-	<title>
-		Quack
-	</title>
+<title>
+	Quack
+</title>
 
-	
-	<script type="text/javascript" src="phaser.js"></script>
-	<script type="text/javascript" src="Boot.js"></script>
-	<script type="text/javascript" src="Preloader.js"></script>
-	<script type="text/javascript" src="MainMenu.js"></script>
-	<script type="text/javascript" src="Game.js"></script>	
-	<script type="text/javascript" src="GameOver.js"></script>	
-	
-	
+
+<script type="text/javascript" src="phaser.js"></script>
+<script type="text/javascript" src="Boot.js"></script>
+<script type="text/javascript" src="Preloader.js"></script>
+<script type="text/javascript" src="MainMenu.js"></script>
+<script type="text/javascript" src="Game.js"></script>
+<script type="text/javascript" src="GameOver.js"></script>
+
+
 <script type="text/javascript">
- 
-window.onload = function() {
-	var game = new Phaser.Game(550,400, Phaser.AUTO, '');
- 
-//adding all the required states
-	game.state.add('Boot', Quack.Boot);
-	game.state.add('Preloader', Quack.Preloader);
-	game.state.add('MainMenu', Quack.MainMenu);
-	game.state.add('Game', Quack.Game);
-	game.state.add('GameOver', Quack.GameOver);
+	window.onload = function () {
+		var game = new Phaser.Game(550, 400, Phaser.AUTO, '');
 
-	game.state.start('Boot'); //starting the boot state
- 
-};
- 
+		//adding all the required states
+		game.state.add('Boot', Quack.Boot);
+		game.state.add('Preloader', Quack.Preloader);
+		game.state.add('MainMenu', Quack.MainMenu);
+		game.state.add('Game', Quack.Game);
+		game.state.add('GameOver', Quack.GameOver);
+
+		game.state.start('Boot'); //starting the boot state
+
+	};
 </script>
+
 </html>

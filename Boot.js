@@ -1,6 +1,6 @@
 var Quack = {}; //declare the object that will hold all game states
-var clicks = 0;     // basic global variables
-var playmusic = true;  //global toggle to control music play across states
+var clicks = 0; // basic global variables
+var playmusic = true; //global toggle to control music play across states
 var playsound = true;
 var desktop;
 
@@ -17,8 +17,8 @@ var coop = false;
 } else {
 	level = localStorage.getItem('myItemKey');
 }*/
-Quack.Boot = function (game) {  //declare the boot state
-	
+Quack.Boot = function (game) { //declare the boot state
+
 };
 
 Quack.Boot.prototype = {
@@ -31,9 +31,9 @@ Quack.Boot.prototype = {
 	},
 
 	create: function () {
-		
-		this.state.start('Preloader');   //start the Preloader state
-		if(this.game.device.desktop) {
+
+		this.state.start('Preloader'); //start the Preloader state
+		if (this.game.device.desktop) {
 			desktop = 1;
 		} else {
 			desktop = 0;
