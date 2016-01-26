@@ -30,6 +30,12 @@ var enemiesAlive;
 var sloc;
 var water;
 
+var cam;
+var walln;
+var walls;
+var walle;
+var wallw;
+
 
 sheep = function (index, game, player, xpos, ypos) {
 	this.game = game;
@@ -70,6 +76,18 @@ Quack.Game.prototype = {
 	preload: function () {},
 
 	create: function () {
+
+		cam = this.add.sprite(0, 0, "cam");
+		walln = this.add.sprite(-2, -2, "wall2");
+		walls = this.add.sprite(-2, this.game.height + 2, "wall2");
+		walle = this.add.sprite(this.game.width + 2, -2, "wall1");
+		wallw = this.add.sprite(-2, -2, "wall1");
+
+		walln.fixedToCamera = true;
+		walls.fixedToCamera = true;
+		walle.fixedToCamera = true;
+		wallw.fixedToCamera = true;
+
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 		collects = 0;
 		sindex = 0;
@@ -179,6 +197,13 @@ Quack.Game.prototype = {
 	},
 
 	update: function () {
+		if (coop) {
+			cam.x = (player.x + player2.x) / 2
+			cam.y = (player.y + player2.y) / 2
+		} else {
+			cam.x = player.x;
+			cam.y = player.y;
+		}
 		player.bringToTop();
 		var cursors = this.input.keyboard.createCursorKeys();
 		var wasd = {
@@ -290,9 +315,49 @@ Quack.Game.prototype = {
 				player2.body.velocity.y = 0;
 			}
 
+			if (this.checkOverlap(player, walln)) {
+				if (player.body.velocity.y < 0) {
+					player.body.velocity.y = 0
+				}
+			}
+			if (this.checkOverlap(player, walle)) {
+				if (player.body.velocity.x > 0) {
+					player.body.velocity.x = 0;
+				}
+			}
+			if (this.checkOverlap(player, walls)) {
+				if (player.body.velocity.y > 0) {
+					player.body.velocity.y = 0
+				}
+			}
+			if (this.checkOverlap(player, wallw)) {
+				if (player.body.velocity.x < 0) {
+					player.body.velocity.x = 0;
+				}
+			}
+			if (this.checkOverlap(player2, walln)) {
+				if (player2.body.velocity.y < 0) {
+					player2.body.velocity.y = 0
+				}
+			}
+			if (this.checkOverlap(player2, walle)) {
+				if (player2.body.velocity.x > 0) {
+					player2.body.velocity.x = 0;
+				}
+			}
+			if (this.checkOverlap(player2, walls)) {
+				if (player2.body.velocity.y > 0) {
+					player2.body.velocity.y = 0
+				}
+			}
+			if (this.checkOverlap(player2, wallw)) {
+				if (player2.body.velocity.x < 0) {
+					player2.body.velocity.x = 0;
+				}
+			}
 
 		}
-		this.camera.follow(player);
+		this.camera.follow(cam);
 		this.physics.arcade.collide(player, layer);
 
 

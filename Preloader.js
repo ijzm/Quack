@@ -19,6 +19,9 @@ Quack.Preloader.prototype = {
 		this.load.image('bullet', 'assets/bullet.png');
 
 		this.load.image('sheep', 'assets/sheep.png');
+		this.load.image('cam', 'assets/cam.png');
+		this.load.image('wall1', 'assets/wall1.png');
+		this.load.image('wall2', 'assets/wall2.png');
 
 		this.load.spritesheet('player', 'assets/player.png', 33, 33);
 		this.load.spritesheet('player2', 'assets/player2.png', 33, 33);
