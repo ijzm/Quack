@@ -11,6 +11,7 @@ var layer;
 var canshoot;
 
 var bullets;
+var bullets2;
 var fireRate = 200;
 var nextFire = 0;
 var nextFire2 = 0;
@@ -180,6 +181,15 @@ Quack.Game.prototype = {
 		bullets.setAll('anchor.y', 0.5);
 		bullets.setAll('outOfBoundsKill', true);
 		bullets.setAll('checkWorldBounds', true);
+
+		bullets2 = this.add.group();
+		bullets2.enableBody = true;
+		bullets2.physicsBodyType = Phaser.Physics.ARCADE;
+		bullets2.createMultiple(30, 'bullet2', 0, false);
+		bullets2.setAll('anchor.x', 0.5);
+		bullets2.setAll('anchor.y', 0.5);
+		bullets2.setAll('outOfBoundsKill', true);
+		bullets2.setAll('checkWorldBounds', true);
 
 		endings = this.add.group();
 		map.createFromTiles(10, 10, "redending", layer, endings);
@@ -384,13 +394,20 @@ Quack.Game.prototype = {
 					player2.body.velocity.x = 0;
 				}
 			}
+			if (player2.health <= 0) {
+				this.game.state.start("GameOver");
+			}
 
 		}
 		this.camera.follow(cam);
 		this.physics.arcade.collide(player, layer);
 
+		if (player.health <= 0) {
+			this.game.state.start("GameOver");
+		}
 
 		bullets.forEach(this.destroyblock, this, true);
+		bullets2.forEach(this.destroyblock, this, true);
 
 		for (var i = 0; i < sheepgroup.length; i++) {
 
@@ -427,6 +444,21 @@ Quack.Game.prototype = {
 				sprite.x = -10;
 			}
 		}
+
+		if (sprite.key == "bullet") {
+			if (this.checkOverlap(sprite, player2)) {
+				sprite.x = -10;
+				player2.health--;
+			}
+		}
+		if (sprite.key == "bullet2") {
+			if (this.checkOverlap(sprite, player)) {
+				sprite.x = -10;
+				player.health--;
+			}
+		}
+
+
 	},
 
 	win: function () {
@@ -492,9 +524,9 @@ Quack.Game.prototype = {
 	fire2: function () {
 		if (coop) {
 			if (canshoot) {
-				if (this.time.now > nextFire2 && bullets.countDead() > 0) {
+				if (this.time.now > nextFire2 && bullets2.countDead() > 0) {
 					nextFire2 = this.time.now + fireRate;
-					var bullet2 = bullets.getFirstExists(false);
+					var bullet2 = bullets2.getFirstExists(false);
 					bullet2.reset(player2.x - 1, player2.y - 2);
 					if (player2.frame === 0) {
 						bullet2.body.velocity.x = 200;

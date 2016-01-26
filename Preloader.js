@@ -18,6 +18,7 @@ Quack.Preloader.prototype = {
 		this.load.image('explotion', 'assets/explotion.png');
 
 		this.load.image('bullet', 'assets/bullet.png');
+		this.load.image('bullet2', 'assets/bullet2.png');
 
 		this.load.image('sheep', 'assets/sheep.png');
 		this.load.image('cam', 'assets/cam.png');
