@@ -119,6 +119,8 @@ Quack.Game.prototype = {
 		map.replace(6, 1, playerspawn.x, playerspawn.y, 1, 1)
 		this.physics.arcade.enable(player);
 		player.body.collideWorldBounds = true;
+		player.body.setSize(5, 5, 0, 0);
+		player.health = 3;
 
 		if (coop) {
 			player2spawn = map.searchTileIndex(7);
@@ -131,6 +133,7 @@ Quack.Game.prototype = {
 			map.replace(7, 1, player2spawn.x, player2spawn.y, 1, 1);
 			this.physics.arcade.enable(player2);
 			player2.body.collideWorldBounds = true;
+			player2.body.setSize(5, 5, 0, 0);
 		} else {
 			player2spawn = map.searchTileIndex(7);
 			map.replace(7, 1, player2spawn.x, player2spawn.y, 1, 1)
@@ -148,6 +151,8 @@ Quack.Game.prototype = {
 		map.setTileIndexCallback(5, this.pickbullets, this);
 		map.setTileIndexCallback(10, this.win, this);
 		map.setTileIndexCallback(19, this.pickkey, this);
+		map.setTileIndexCallback(21, this.mine, this);
+
 
 		//WATER!
 		map.setCollisionBetween(53, 53);
@@ -385,7 +390,9 @@ Quack.Game.prototype = {
 
 	},
 
-	render: function () {},
+	render: function () {
+		this.game.debug.body(player);
+	},
 
 	collect: function (sprite, tile) {
 		tile.index = 1;
@@ -428,6 +435,18 @@ Quack.Game.prototype = {
 			map.putTile(1, blockfound.x, blockfound.y, layer);
 			layer.dirty = true;
 		}
+	},
+
+	mine: function (sprite, tile) {
+		var explotion = this.add.sprite(sprite.x, sprite.y, "explotion");
+		explotion.anchor.x = 0.5;
+		explotion.anchor.y = 0.5;
+		this.time.events.add(Phaser.Timer.SECOND * 1, function () {
+			explotion.kill();
+		}, this);
+		map.putTile(1, tile.x, tile.y, layer);
+		layer.dirty = true;
+		sprite.health--;
 	},
 
 

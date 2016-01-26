@@ -15,6 +15,7 @@ Quack.Preloader.prototype = {
 		this.load.image('logo', 'assets/logo.png');
 		this.load.image('redending', 'assets/redending.png');
 		this.load.image('blueending', 'assets/blueending.png');
+		this.load.image('explotion', 'assets/explotion.png');
 
 		this.load.image('bullet', 'assets/bullet.png');
 
