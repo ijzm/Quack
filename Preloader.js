@@ -26,6 +26,8 @@ Quack.Preloader.prototype = {
 
 		this.load.spritesheet('player', 'assets/player.png', 33, 33);
 		this.load.spritesheet('player2', 'assets/player2.png', 33, 33);
+		this.load.spritesheet('healthbox', 'assets/healthbox.png', 31, 10);
+		this.load.spritesheet('healthbox2', 'assets/healthbox2.png', 31, 10);
 		//Music/Sounds
 		this.load.audio('menumusic', ['assets/menumusic.mp3', 'assets/menumusic.ogg']);
 		this.load.audio('ingame', ['assets/ingame.mp3', 'assets/ingame.ogg']);

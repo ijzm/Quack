@@ -19,8 +19,6 @@ var scoretext;
 var canmove;
 var speed = 150;
 
-var random = true;
-
 var collects;
 var starcollects;
 var sindex;
@@ -37,6 +35,9 @@ var walls;
 var walle;
 var wallw;
 
+var healthbox;
+var healthbox2;
+
 
 sheep = function (index, game, player, xpos, ypos) {
 	this.game = game;
@@ -45,8 +46,8 @@ sheep = function (index, game, player, xpos, ypos) {
 	this.alive = true;
 
 	this.sheep = game.add.sprite(xpos, ypos, "sheep");
-	console.log(this.sheep.x)
-		//this.sheep.anchor.set(0.5); 
+	console.log(this.sheep.x);
+	//this.sheep.anchor.set(0.5); 
 	this.sheep.name = index.toString();
 	this.game.physics.enable(this.sheep, Phaser.Physics.ARCADE);
 	//this.sheep.body.collideWorldBounds = true;
@@ -70,7 +71,7 @@ sheep.prototype.damage = function () {
 sheep.prototype.update = function () {
 	this.sheep.body.velocity.x = 200;
 	//console.log(this.sheep.x)
-}
+};
 
 Quack.Game.prototype = {
 
@@ -109,22 +110,25 @@ Quack.Game.prototype = {
 
 
 		playerspawn = map.searchTileIndex(6);
-		if (playerspawn == null) {
+		if (playerspawn === null) {
 			playerspawn = map.searchTileIndex(55);
 			water = true;
 		}
 		player = this.add.sprite(playerspawn.x * 35 + 35 / 2, playerspawn.y * 35 + 35 / 2, "player");
 		player.anchor.x = 0.5;
 		player.anchor.y = 0.5;
-		map.replace(6, 1, playerspawn.x, playerspawn.y, 1, 1)
+		map.replace(6, 1, playerspawn.x, playerspawn.y, 1, 1);
 		this.physics.arcade.enable(player);
 		player.body.collideWorldBounds = true;
 		player.body.setSize(5, 5, 0, 0);
 		player.health = 3;
 
+		healthbox = this.add.sprite(10, this.game.height - 23, "healthbox");
+
+
 		if (coop) {
 			player2spawn = map.searchTileIndex(7);
-			if (player2spawn == null) {
+			if (player2spawn === null) {
 				player2spawn = map.searchTileIndex(56);
 			}
 			player2 = this.add.sprite(player2spawn.x * 35 + 35 / 2, player2spawn.y * 35 + 35 / 2, "player2");
@@ -134,9 +138,12 @@ Quack.Game.prototype = {
 			this.physics.arcade.enable(player2);
 			player2.body.collideWorldBounds = true;
 			player2.body.setSize(5, 5, 0, 0);
+			player2.health = 3;
+			healthbox2 = this.add.sprite(this.game.width - 10, this.game.height - 23, "healthbox2");
+			healthbox2.anchor.x = 1;
 		} else {
 			player2spawn = map.searchTileIndex(7);
-			map.replace(7, 1, player2spawn.x, player2spawn.y, 1, 1)
+			map.replace(7, 1, player2spawn.x, player2spawn.y, 1, 1);
 		}
 
 
@@ -174,7 +181,7 @@ Quack.Game.prototype = {
 		bullets.setAll('outOfBoundsKill', true);
 		bullets.setAll('checkWorldBounds', true);
 
-		endings = this.add.group()
+		endings = this.add.group();
 		map.createFromTiles(10, 10, "redending", layer, endings);
 		map.createFromTiles(11, 11, "blueending", layer, endings);
 		endings.forEach(function (sprite) {
@@ -201,7 +208,7 @@ Quack.Game.prototype = {
 				starcollects++;
 			}
 		}
-		console.log(collects)
+		console.log(collects);
 		console.log(starcollects);
 		collects += starcollects;
 
@@ -218,8 +225,8 @@ Quack.Game.prototype = {
 
 	update: function () {
 		if (coop) {
-			cam.x = (player.x + player2.x) / 2
-			cam.y = (player.y + player2.y) / 2
+			cam.x = (player.x + player2.x) / 2;
+			cam.y = (player.y + player2.y) / 2;
 		} else {
 			cam.x = player.x;
 			cam.y = player.y;
@@ -271,16 +278,18 @@ Quack.Game.prototype = {
 		if (!(cursors.up.isDown || cursors.down.isDown || cursors.left.isDown || cursors.right.isDown)) {
 			player.body.velocity.x = 0;
 			player.body.velocity.y = 0;
-			player.y = this.math.snapTo(player.y, 35, 35 / 2)
-			player.x = this.math.snapTo(player.x, 35, 35 / 2)
+			player.y = this.math.snapTo(player.y, 35, 35 / 2);
+			player.x = this.math.snapTo(player.x, 35, 35 / 2);
 		}
 		if (wasd.space.isDown) {
 			this.fire();
 			//			this.fire2();
 		}
+		healthbox.frame = player.health - 1;
 		//p2
 
 		if (coop) {
+			healthbox2.frame = player2.health - 1;
 			player2.bringToTop();
 			if (wasd.up.isDown) {
 				player2.frame = 3;
@@ -337,7 +346,7 @@ Quack.Game.prototype = {
 
 			if (this.checkOverlap(player, walln)) {
 				if (player.body.velocity.y < 0) {
-					player.body.velocity.y = 0
+					player.body.velocity.y = 0;
 				}
 			}
 			if (this.checkOverlap(player, walle)) {
@@ -347,7 +356,7 @@ Quack.Game.prototype = {
 			}
 			if (this.checkOverlap(player, walls)) {
 				if (player.body.velocity.y > 0) {
-					player.body.velocity.y = 0
+					player.body.velocity.y = 0;
 				}
 			}
 			if (this.checkOverlap(player, wallw)) {
@@ -357,7 +366,7 @@ Quack.Game.prototype = {
 			}
 			if (this.checkOverlap(player2, walln)) {
 				if (player2.body.velocity.y < 0) {
-					player2.body.velocity.y = 0
+					player2.body.velocity.y = 0;
 				}
 			}
 			if (this.checkOverlap(player2, walle)) {
@@ -367,7 +376,7 @@ Quack.Game.prototype = {
 			}
 			if (this.checkOverlap(player2, walls)) {
 				if (player2.body.velocity.y > 0) {
-					player2.body.velocity.y = 0
+					player2.body.velocity.y = 0;
 				}
 			}
 			if (this.checkOverlap(player2, wallw)) {
@@ -381,7 +390,7 @@ Quack.Game.prototype = {
 		this.physics.arcade.collide(player, layer);
 
 
-		bullets.forEach(this.destroyblock, this, true)
+		bullets.forEach(this.destroyblock, this, true);
 
 		for (var i = 0; i < sheepgroup.length; i++) {
 
@@ -391,13 +400,13 @@ Quack.Game.prototype = {
 	},
 
 	render: function () {
-		this.game.debug.body(player);
+		//this.game.debug.body(player);
 	},
 
 	collect: function (sprite, tile) {
 		tile.index = 1;
 		layer.dirty = true;
-		collects--
+		collects--;
 		console.log(collects);
 
 	},
@@ -408,7 +417,7 @@ Quack.Game.prototype = {
 	},
 	destroyblock: function (sprite) {
 		var test = map.getTile(layer.getTileX(sprite.x), layer.getTileY(sprite.y), layer);
-		if (!(test == null)) {
+		if (test !== null) {
 			if (test.index == 4) {
 				map.putTile(1, layer.getTileX(sprite.x), layer.getTileY(sprite.y), layer);
 				layer.dirty = true;
@@ -458,22 +467,22 @@ Quack.Game.prototype = {
 				bullet.reset(player.x - 1, player.y - 2);
 				if (player.frame === 0) {
 					bullet.body.velocity.x = 200;
-					bullet.body.velocity.y = 0
+					bullet.body.velocity.y = 0;
 					bullet.angle = 0;
 				}
 				if (player.frame === 1) {
-					bullet.body.velocity.x = 0
-					bullet.body.velocity.y = 200
+					bullet.body.velocity.x = 0;
+					bullet.body.velocity.y = 200;
 					bullet.angle = 90;
 				}
 				if (player.frame === 2) {
-					bullet.body.velocity.x = -200
-					bullet.body.velocity.y = 0
+					bullet.body.velocity.x = -200;
+					bullet.body.velocity.y = 0;
 					bullet.angle = 0;
 				}
 				if (player.frame === 3) {
-					bullet.body.velocity.x = 0
-					bullet.body.velocity.y = -200
+					bullet.body.velocity.x = 0;
+					bullet.body.velocity.y = -200;
 					bullet.angle = 90;
 				}
 			}
@@ -489,22 +498,22 @@ Quack.Game.prototype = {
 					bullet2.reset(player2.x - 1, player2.y - 2);
 					if (player2.frame === 0) {
 						bullet2.body.velocity.x = 200;
-						bullet2.body.velocity.y = 0
+						bullet2.body.velocity.y = 0;
 						bullet2.angle = 0;
 					}
 					if (player2.frame === 1) {
-						bullet2.body.velocity.x = 0
-						bullet2.body.velocity.y = 200
+						bullet2.body.velocity.x = 0;
+						bullet2.body.velocity.y = 200;
 						bullet2.angle = 90;
 					}
 					if (player2.frame === 2) {
-						bullet2.body.velocity.x = -200
-						bullet2.body.velocity.y = 0
+						bullet2.body.velocity.x = -200;
+						bullet2.body.velocity.y = 0;
 						bullet2.angle = 0;
 					}
 					if (player2.frame === 3) {
-						bullet2.body.velocity.x = 0
-						bullet2.body.velocity.y = -200
+						bullet2.body.velocity.x = 0;
+						bullet2.body.velocity.y = -200;
 						bullet2.angle = 90;
 					}
 				}
