@@ -22,6 +22,7 @@ var speed = 150;
 var random = true;
 
 var collects;
+var starcollects;
 var sindex;
 
 var sheepgroup;
@@ -90,6 +91,7 @@ Quack.Game.prototype = {
 
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 		collects = 0;
+		starcollects = 0;
 		sindex = 0;
 
 		map = this.add.tilemap(level.toString());
@@ -184,6 +186,19 @@ Quack.Game.prototype = {
 				collects++;
 			}
 		}
+
+		if (water) {
+			while (map.searchTileIndex(54, starcollects, false, layer) !== null) {
+				starcollects++;
+			}
+		} else {
+			while (map.searchTileIndex(3, starcollects, false, layer) !== null) {
+				starcollects++;
+			}
+		}
+		console.log(collects)
+		console.log(starcollects);
+		collects += starcollects;
 
 		sheepgroup = [];
 
