@@ -8,6 +8,8 @@ var player2spawn;
 
 var map;
 var layer;
+var layer2;
+var layer3;
 var canshoot;
 
 var bullets;
@@ -22,12 +24,10 @@ var speed = 150;
 
 var collects;
 var starcollects;
-var sindex;
 
 var sheepgroup;
 var endings;
 var enemiesAlive;
-var sloc;
 var water;
 
 var cam;
@@ -39,40 +39,8 @@ var wallw;
 var healthbox;
 var healthbox2;
 
-
-sheep = function (index, game, player, xpos, ypos) {
-	this.game = game;
-	this.health = 2;
-	this.player = player;
-	this.alive = true;
-
-	this.sheep = game.add.sprite(xpos, ypos, "sheep");
-	console.log(this.sheep.x);
-	//this.sheep.anchor.set(0.5); 
-	this.sheep.name = index.toString();
-	this.game.physics.enable(this.sheep, Phaser.Physics.ARCADE);
-	//this.sheep.body.collideWorldBounds = true;
-};
-
-sheep.prototype.damage = function () {
-
-	this.health -= 1;
-
-	if (this.health <= 0) {
-		this.alive = false;
-		this.sheep.kill();
-
-		return true;
-	}
-
-	return false;
-
-};
-
-sheep.prototype.update = function () {
-	this.sheep.body.velocity.x = 200;
-	//console.log(this.sheep.x)
-};
+var sheepindex;
+var sheeploc;
 
 Quack.Game.prototype = {
 
@@ -94,20 +62,24 @@ Quack.Game.prototype = {
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 		collects = 0;
 		starcollects = 0;
-		sindex = 0;
+		sheepindex = 0;
 
 		map = this.add.tilemap(level.toString());
 		map.addTilesetImage('tiles', 'tiles');
 		layer = map.createLayer('main');
+		layer2 = map.createLayer('path');
+		layer2.alpha = 0;
+		//		layer.alpha = 0;
+		layer3 = map.createLayer("enemies")
 		layer.resizeWorld();
 
 		canshoot = false;
 		canmove = true;
 
-		//		this.tick = this.game.time.create(false);
-		//		this.tick.loop(5000, this.randomize, this);
-		//		this.tick.start();
-
+		/*		this.tick = this.game.time.create(false);
+				this.tick.loop(1000, this.updateenemies, this);
+				this.tick.start();
+		*/
 
 
 		playerspawn = map.searchTileIndex(6);
@@ -124,7 +96,9 @@ Quack.Game.prototype = {
 		player.body.setSize(5, 5, 0, 0);
 		player.health = 3;
 
-		healthbox = this.add.sprite(10, this.game.height - 23, "healthbox");
+		healthbox = this.add.sprite(this.game.width - 10, this.game.height - 23, "healthbox");
+		healthbox.anchor.x = 1;
+		healthbox.fixedToCamera = true;
 
 
 		if (coop) {
@@ -140,17 +114,13 @@ Quack.Game.prototype = {
 			player2.body.collideWorldBounds = true;
 			player2.body.setSize(5, 5, 0, 0);
 			player2.health = 3;
-			healthbox2 = this.add.sprite(this.game.width - 10, this.game.height - 23, "healthbox2");
-			healthbox2.anchor.x = 1;
+			healthbox2 = this.add.sprite(10, this.game.height - 23, "healthbox2");
+
+			healthbox2.fixedToCamera = true;
 		} else {
 			player2spawn = map.searchTileIndex(7);
 			map.replace(7, 1, player2spawn.x, player2spawn.y, 1, 1);
 		}
-
-
-
-
-
 		map.setCollisionBetween(4, 4);
 		map.setCollisionBetween(8, 8);
 		map.setCollisionBetween(20, 20);
@@ -160,7 +130,6 @@ Quack.Game.prototype = {
 		map.setTileIndexCallback(10, this.win, this);
 		map.setTileIndexCallback(19, this.pickkey, this);
 		map.setTileIndexCallback(21, this.mine, this);
-
 
 		//WATER!
 		map.setCollisionBetween(53, 53);
@@ -218,19 +187,14 @@ Quack.Game.prototype = {
 				starcollects++;
 			}
 		}
-		console.log(collects);
-		console.log(starcollects);
 		collects += starcollects;
 
-		sheepgroup = [];
-
-		while (map.searchTileIndex(17, sindex, false, layer) !== null) {
-			sloc = map.searchTileIndex(17, sindex, false, layer);
-			sheepgroup.push(new sheep(sindex, this.game, player, sloc.x, sloc.y));
-			sindex++;
-			//map.replace(17, 1, sloc.x, sloc.y, 1, 1, layer);
-		}
-
+		/*		sheepgroup = [];
+				while (map.searchTileIndex(17, sheepindex, false, layer) !== null) {
+					sheeploc = map.searchTileIndex(17, sheepindex, false, layer);
+					sheepgroup.push(new sheep(sheepindex, sheeploc.x, sheeploc.y, 0));
+					sheepindex++;
+				}*/
 	},
 
 	update: function () {
@@ -293,7 +257,6 @@ Quack.Game.prototype = {
 		}
 		if (wasd.space.isDown) {
 			this.fire();
-			//			this.fire2();
 		}
 		healthbox.frame = player.health - 1;
 		//p2
@@ -409,10 +372,7 @@ Quack.Game.prototype = {
 		bullets.forEach(this.destroyblock, this, true);
 		bullets2.forEach(this.destroyblock, this, true);
 
-		for (var i = 0; i < sheepgroup.length; i++) {
 
-			sheepgroup[i].update();
-		}
 
 	},
 
@@ -424,8 +384,6 @@ Quack.Game.prototype = {
 		tile.index = 1;
 		layer.dirty = true;
 		collects--;
-		console.log(collects);
-
 	},
 	pickbullets: function (sprite, tile) {
 		tile.index = 1;
@@ -444,17 +402,18 @@ Quack.Game.prototype = {
 				sprite.x = -10;
 			}
 		}
-
-		if (sprite.key == "bullet") {
-			if (this.checkOverlap(sprite, player2)) {
-				sprite.x = -10;
-				player2.health--;
+		if (coop) {
+			if (sprite.key == "bullet") {
+				if (this.checkOverlap(sprite, player2)) {
+					sprite.x = -10;
+					player2.health--;
+				}
 			}
-		}
-		if (sprite.key == "bullet2") {
-			if (this.checkOverlap(sprite, player)) {
-				sprite.x = -10;
-				player.health--;
+			if (sprite.key == "bullet2") {
+				if (this.checkOverlap(sprite, player)) {
+					sprite.x = -10;
+					player.health--;
+				}
 			}
 		}
 
@@ -561,4 +520,92 @@ Quack.Game.prototype = {
 		return Phaser.Rectangle.intersects(boundsA, boundsB);
 
 	},
+
+	/*	updateenemies: function () {
+			for (var i = 0; i < sheepgroup.length; i++) {
+				sheepgroup[i].update();
+			}
+		},*/
 };
+/*
+sheep = function (index, xpos, ypos, direction) {
+	this.x = xpos;
+	this.y = ypos;
+	this.index = index;
+	this.direction = direction;
+	console.log(this);
+	map.putTile(101, xpos, ypos, layer3);
+};
+
+sheep.prototype.update = function () {
+	var newdirection;
+
+	function changedirection() {
+		console.log("calld")
+		newdirection = Math.floor(Math.random() * 4)
+		if (newdirection === 0) {
+			if (map.getTile(this.x + 1, this.y, layer2) != null) {
+				changedirection();
+			}
+		}
+		if (newdirection === 1) {
+			if (map.getTile(this.x, this.y + 1, layer2) != null) {
+				changedirection();
+			}
+		}
+		if (newdirection === 2) {
+			if (map.getTile(this.x - 1, this.y, layer2) != null) {
+				changedirection();
+			}
+		}
+		if (newdirection === 3) {
+			if (map.getTile(this.x, this.y - 1, layer2) != null) {
+				changedirection();
+			}
+		}
+	}
+	if (this.direction === 0) {
+		if (map.getTile(this.x + 1, this.y, layer2) == null) {
+			changedirection();
+			this.direction = newdirection;
+		} else {
+			map.removeTile(this.x, this.y, layer3);
+			map.putTile(100, this.x, this.y, layer2);
+			this.x++;
+			map.putTile(101, this.x, this.y, layer3);
+		}
+	}
+	if (this.direction === 1) {
+		if (map.getTile(this.x, this.y + 1, layer2) == null) {
+			changedirection();
+			this.direction = newdirection;
+		} else {
+			map.removeTile(this.x, this.y, layer3);
+			map.putTile(100, this.x, this.y, layer2);
+			this.y++;
+			map.putTile(101, this.x, this.y, layer3);
+		}
+	}
+	if (this.direction === 2) {
+		if (map.getTile(this.x - 1, this.y, layer2) == null) {
+			changedirection();
+			this.direction = newdirection;
+		} else {
+			map.removeTile(this.x, this.y, layer3);
+			map.putTile(100, this.x, this.y, layer2);
+			this.x--;
+			map.putTile(101, this.x, this.y, layer3);
+		}
+	}
+	if (this.direction === 3) {
+		if (map.getTile(this.x, this.y + 1, layer2) == null) {
+			changedirection();
+			this.direction = newdirection;
+		} else {
+			map.removeTile(this.x, this.y, layer3);
+			map.putTile(100, this.x, this.y, layer2);
+			this.y--;
+			map.putTile(101, this.x, this.y, layer3);
+		}
+	}
+}*/
