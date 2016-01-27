@@ -11,6 +11,7 @@ var layer;
 var layer2;
 var layer3;
 var canshoot;
+var canshoot2;
 
 var bullets;
 var bullets2;
@@ -74,6 +75,7 @@ Quack.Game.prototype = {
 		layer.resizeWorld();
 
 		canshoot = false;
+		canshoot2 = false;
 		canmove = true;
 
 		/*		this.tick = this.game.time.create(false);
@@ -386,9 +388,22 @@ Quack.Game.prototype = {
 		collects--;
 	},
 	pickbullets: function (sprite, tile) {
-		tile.index = 1;
-		layer.dirty = true;
-		canshoot = true;
+		if (sprite == player && canshoot) {
+
+		} else if (sprite == player2 && canshoot2) {
+
+		} else {
+			tile.index = 1;
+			layer.dirty = true;
+			if (sprite == player) {
+				canshoot = true;
+			}
+			if (sprite == player2) {
+				canshoot2 = true;
+			}
+		}
+
+
 	},
 	destroyblock: function (sprite) {
 		var test = map.getTile(layer.getTileX(sprite.x), layer.getTileY(sprite.y), layer);
@@ -482,7 +497,7 @@ Quack.Game.prototype = {
 
 	fire2: function () {
 		if (coop) {
-			if (canshoot) {
+			if (canshoot2) {
 				if (this.time.now > nextFire2 && bullets2.countDead() > 0) {
 					nextFire2 = this.time.now + fireRate;
 					var bullet2 = bullets2.getFirstExists(false);
