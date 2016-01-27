@@ -78,10 +78,10 @@ Quack.Game.prototype = {
 		canshoot2 = false;
 		canmove = true;
 
-		/*		this.tick = this.game.time.create(false);
-				this.tick.loop(1000, this.updateenemies, this);
-				this.tick.start();
-		*/
+		this.tick = this.game.time.create(false);
+		this.tick.loop(1000, this.updateenemies, this);
+		this.tick.start();
+
 
 
 		playerspawn = map.searchTileIndex(6);
@@ -191,12 +191,12 @@ Quack.Game.prototype = {
 		}
 		collects += starcollects;
 
-		/*		sheepgroup = [];
-				while (map.searchTileIndex(17, sheepindex, false, layer) !== null) {
-					sheeploc = map.searchTileIndex(17, sheepindex, false, layer);
-					sheepgroup.push(new sheep(sheepindex, sheeploc.x, sheeploc.y, 0));
-					sheepindex++;
-				}*/
+		sheepgroup = [];
+		while (map.searchTileIndex(17, sheepindex, false, layer) !== null) {
+			sheeploc = map.searchTileIndex(17, sheepindex, false, layer);
+			sheepgroup.push(new sheep(sheepindex, sheeploc.x, sheeploc.y, 0));
+			sheepindex++;
+		}
 	},
 
 	update: function () {
@@ -536,13 +536,13 @@ Quack.Game.prototype = {
 
 	},
 
-	/*	updateenemies: function () {
-			for (var i = 0; i < sheepgroup.length; i++) {
-				sheepgroup[i].update();
-			}
-		},*/
+	updateenemies: function () {
+		for (var i = 0; i < sheepgroup.length; i++) {
+			sheepgroup[i].update();
+		}
+	},
 };
-/*
+
 sheep = function (index, xpos, ypos, direction) {
 	this.x = xpos;
 	this.y = ypos;
@@ -623,4 +623,4 @@ sheep.prototype.update = function () {
 			map.putTile(101, this.x, this.y, layer3);
 		}
 	}
-}*/
+}
